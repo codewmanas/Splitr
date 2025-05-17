@@ -1,1 +1,1 @@
-# Splitr
+<h1 align ="center">Splitr - AI Powered Expense Manager</h1>
