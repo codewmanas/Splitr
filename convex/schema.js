@@ -6,34 +6,36 @@ export default defineSchema({
         name: v.string(),
         email: v.string(),
         tokenIdentifier: v.string(),
-        imageUrl: v.optional(v.string()),  
-    }).index("by_token",["tokenIdentifier"])
-      .index("by_email",["email"])
-      .searchIndex("by_name",{searchField: "name"})
-      .searchIndex("search_email", {searchField: "email"}),
+        imageUrl: v.optional(v.string()),
+    })
+        .index("by_token", ["tokenIdentifier"])
+        .index("by_email", ["email"])
+        .searchIndex("search_name", { searchField: "name" })
+        .searchIndex("search_email", { searchField: "email" }),
 
-      expenses: defineTable({
+    // Expenses
+    expenses: defineTable({
         description: v.string(),
-          amount: v.number(),
-          category: v.optional(v.string()),
-          date: v.number(), // timestamp
-          paidByUserId: v.id("users"), // Reference to users table
-          splitType: v.string(), // "equal", "percentage", "exact"
-          splits: v.array(
-              v.object({
-                  userId: v.id("users"), // Reference to users table
-                  amount: v.number(), // amount owed by this user
-                  paid: v.boolean(),
-              })
-          ),
-          groupId: v.optional(v.id("groups")), // null for one-on-one expenses
-          createdBy: v.id("users"), // Reference to users table
-      })
+        amount: v.number(),
+        category: v.optional(v.string()),
+        date: v.number(), // timestamp
+        paidByUserId: v.id("users"), // Reference to users table
+        splitType: v.string(), // "equal", "percentage", "exact"
+        splits: v.array(
+            v.object({
+                userId: v.id("users"), // Reference to users table
+                amount: v.number(), // amount owed by this user
+                paid: v.boolean(),
+            })
+        ),
+        groupId: v.optional(v.id("groups")), // null for one-on-one expenses
+        createdBy: v.id("users"), // Reference to users table
+    })
         .index("by_group", ["groupId"])
         .index("by_user_and_group", ["paidByUserId", "groupId"])
         .index("by_date", ["date"]),
 
-
+    // Settlements
     settlements: defineTable({
         amount: v.number(),
         note: v.optional(v.string()),
@@ -48,7 +50,8 @@ export default defineSchema({
         .index("by_user_and_group", ["paidByUserId", "groupId"])
         .index("by_receiver_and_group", ["receivedByUserId", "groupId"])
         .index("by_date", ["date"]),
-        
+
+    // Groups
     groups: defineTable({
         name: v.string(),
         description: v.optional(v.string()),
@@ -60,5 +63,5 @@ export default defineSchema({
                 joinedAt: v.number(),
             })
         ),
-          }),
-})
+    }),
+});
